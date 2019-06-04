@@ -52,8 +52,17 @@ class PIDController(object):
         @param sensor: current values from sensor
         @return control signal
         '''
-        # YOUR CODE HERE
-
+        # sum of all terms    
+        self.u = self.u + (np.dot((self.Kp + (self.Ki * self.dt) + (self.Kd / self.dt)), (target - sensor))) + (np.dot((self.Kp + (2* self.Kd/self.dt)), self.e1)) + (np.dot((self.Kd / self.dt), self.e2))
+        # update e2
+        self.e2 = self.e1
+        # set e1   
+        self.e1 = (target - sensor)
+        # calculate the velocity 
+        velocity = 2*(self.e2 - self.e1) / self.dt
+        control =  self.u + velocity*self.dt
+        # append the new move
+        self.y.append(control)
         return self.u
 
 
